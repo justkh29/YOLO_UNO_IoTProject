@@ -1,11 +1,13 @@
 #include <global.h>
 
 void setup() {
-  // put your setup code here, to run once:
-  Serial.begin(115200);
+    Serial.begin(115200);
+    xTaskCreate(task12Initialization, "Task 1_2", 2048, NULL, 1, NULL);
 }
 
 void loop() {
   // Serial.println("Hello Custom Board");
   // delay(1000);
+    vTaskDelete(NULL);
+
 }

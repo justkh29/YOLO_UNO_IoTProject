@@ -3,13 +3,12 @@
 
 #include "global.h"
 
-struct SystemState {
+typedef struct {
     SemaphoreHandle_t mutex; // To protect the shared data
     int ledPin;              // Pin for LED
-    int dhtPin;              // Pin for DHT11 Sensor
     int blinkDelay;          // Shared variable: Blink speed in ms
-};
-void taskDHT11(void *pvParameters);
-void taskBlinkLED(void *pvParameters);
+} SystemState;
+extern void taskDHT20(void *pvParameters);
+extern void taskBlinkLED(void *pvParameters);
 
 #endif 

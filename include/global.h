@@ -11,7 +11,12 @@
 #include <Wire.h>
 //#include <DHTesp.h>
 #include <DHT20.h>
-
-#include "../src/device/task1_2.h"
 #include "../src/device/taskDHT20.h"
+typedef struct {
+    SemaphoreHandle_t mutex; // lock for the shared data
+    int blinkDelay;          // blink speed in ms
+    int neo_status;          // status of neopixel
+    int temperature;  
+    int humidity;
+} SystemState;
 #endif

@@ -11,53 +11,48 @@ void taskDHT20(void *pvParameters)
     int temperature = 0;
     while(1)
     {
-        dht.read();
-        humidity = dht.getHumidity();
-        temperature = dht.getTemperature();
-        Serial.print("[DHT] Temp: ");
-        Serial.print(temperature);
-        Serial.print(" C  | Humidity: ");
-        Serial.print(humidity);
-        Serial.println(" %");
-        int newDelay = 1000;
-        
-        if (temperature < 20.0) //Cold TEMP (<20C)
-        {
-            newDelay = 1000;
-        }
-        else if (temperature >= 20.0 && temperature < 30.0) //NORMAL TEMP [20,30)
-        {
-            newDelay = 500;
-        }
-        else //HOT TEMP (>30)
-        {
-            newDelay = 100;
-        }
         if (xSemaphoreTake(sysState->mutex, portMAX_DELAY) == pdTRUE)
         {
-            sysState->blinkDelay = newDelay;
+            dht.read();
+            sysState->humidity = dht.getHumidity();
+            sysState->temperature = dht.getTemperature();
+            Serial.print("[DHT] Temp: ");
+            Serial.print(sysState->temperature);
+            Serial.print(" C  | Humidity: ");
+            Serial.print(sysState->humidity);
+            Serial.println(" %");            
             xSemaphoreGive(sysState->mutex);
         }
+        vTaskDelay(pdMS_TO_TICKS(5000));
     }
-    vTaskDelay(pdMS_TO_TICKS(2000));
-    
 }
 
 void taskBlinkLED(void *pvParameters) 
 {  
     int current_delay = 1000;
     SystemState *sysState = (SystemState *)pvParameters;
-    pinMode(sysState->ledPin, OUTPUT);
+    pinMode(48, OUTPUT);
     while (1)
     {
         if (xSemaphoreTake(sysState->mutex, portMAX_DELAY) == pdTRUE)
         {
-            current_delay = sysState->blinkDelay;
+            if (sysState->temperature < 20.0) //Cold TEMP (<20C)
+            {
+                current_delay = 1000;
+            }
+            else if (sysState->temperature >= 20.0 && sysState->temperature < 30.0) //NORMAL TEMP [20,30)
+            {
+                current_delay = 500;
+            }
+            else //HOT TEMP (>30)
+            {
+                current_delay = 100;
+            }
             xSemaphoreGive(sysState->mutex);
         }
-        digitalWrite(sysState->ledPin, HIGH);
+        digitalWrite(48, HIGH);
         vTaskDelay(pdMS_TO_TICKS(current_delay));
-        digitalWrite(sysState->ledPin, LOW);
+        digitalWrite(48, LOW);
         vTaskDelay(pdMS_TO_TICKS(current_delay));
     }
     

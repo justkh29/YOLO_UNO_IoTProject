@@ -20,25 +20,10 @@ void taskDHT20(void *pvParameters)
             Serial.print(sysState->temperature);
             Serial.print(" C  | Humidity: ");
             Serial.print(sysState->humidity);
-            Serial.println(" %");
-            int newDelay = 1000;
-            
-            if (sysState->temperature < 20.0) //Cold TEMP (<20C)
-            {
-                newDelay = 1000;
-            }
-            else if (sysState->temperature >= 20.0 && sysState->temperature < 30.0) //NORMAL TEMP [20,30)
-            {
-                newDelay = 500;
-            }
-            else //HOT TEMP (>30)
-            {
-                newDelay = 100;
-            }
-            sysState->blinkDelay = newDelay;
+            Serial.println(" %");            
             xSemaphoreGive(sysState->mutex);
         }
-        vTaskDelay(pdMS_TO_TICKS(2000));
+        vTaskDelay(pdMS_TO_TICKS(5000));
     }
 }
 
@@ -51,7 +36,18 @@ void taskBlinkLED(void *pvParameters)
     {
         if (xSemaphoreTake(sysState->mutex, portMAX_DELAY) == pdTRUE)
         {
-            current_delay = sysState->blinkDelay;
+            if (sysState->temperature < 20.0) //Cold TEMP (<20C)
+            {
+                current_delay = 1000;
+            }
+            else if (sysState->temperature >= 20.0 && sysState->temperature < 30.0) //NORMAL TEMP [20,30)
+            {
+                current_delay = 500;
+            }
+            else //HOT TEMP (>30)
+            {
+                current_delay = 100;
+            }
             xSemaphoreGive(sysState->mutex);
         }
         digitalWrite(48, HIGH);

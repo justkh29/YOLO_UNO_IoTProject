@@ -3,20 +3,22 @@
 
 #define MY_SCL 11
 #define MY_SDA 12
+#define LED1_PIN 18  // GPIO for Device 1
+#define LED2_PIN 19  // GPIO for Device 2
 // Global library
 #include <Arduino.h>
 #include <freertos/FreeRTOS.h>
 #include <freertos/task.h>
 #include <freertos/semphr.h>
 #include <Wire.h>
-//#include <DHTesp.h>
 #include <DHT20.h>
+#include <LiquidCrystal_I2C.h> 
 #include "../src/device/taskDHT20.h"
 typedef struct {
     SemaphoreHandle_t mutex; // lock for the shared data
     int blinkDelay;          // blink speed in ms
     int neo_status;          // status of neopixel
-    int temperature;  
-    int humidity;
+    float temperature;  
+    float humidity;
 } SystemState;
 #endif

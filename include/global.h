@@ -20,5 +20,7 @@ typedef struct {
     int neo_status;          // status of neopixel
     float temperature;  
     float humidity;
+    bool device1;
+    bool device2;
 } SystemState;
 #endif

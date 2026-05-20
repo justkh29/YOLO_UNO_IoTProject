@@ -16,6 +16,7 @@
 #include <Wifi.h>
 #include <WebServer.h>
 #include <Preferences.h>
+#include <PubSubClient.h>
 #include <ArduinoJson.h> 
 #include <DHT20.h>
 #include <LiquidCrystal_I2C.h> 

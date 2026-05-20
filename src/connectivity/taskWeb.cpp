@@ -68,7 +68,7 @@ void setupRoutes() {
 		server.send(200, "application/json", response);
 	});
 
-	// API: Scan (Config Mode)
+	// API: Scan WiFi Networks (AP Mode)
 	server.on("/scan", HTTP_GET, []() {
 		WiFi.disconnect(); 
 		delay(100);

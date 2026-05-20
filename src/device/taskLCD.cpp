@@ -32,7 +32,23 @@ void taskLCD(void *pvParameters)
         
         vTaskDelay(pdMS_TO_TICKS(2500)); 
 
-        // Screen 2: Device Status
+        //Screen 2: Web Device Status
+        lcd.clear();
+        if (WiFi.status() == WL_CONNECTED) {
+            lcd.setCursor(0, 0);
+            lcd.print("WiFi: Connected");
+            lcd.setCursor(0, 1);
+            lcd.print(WiFi.localIP()); 
+        } else {
+            lcd.setCursor(0, 0);
+            lcd.print("AP Mode: ");
+            lcd.print(WIFI_SSID); 
+            lcd.setCursor(0, 1);
+            lcd.print("IP: 192.168.4.1");
+        }
+        vTaskDelay(pdMS_TO_TICKS(3000));
+        
+        // Screen 3: LED and FAN status
         lcd.clear();
         lcd.setCursor(0, 0);
         lcd.print("Dev1 (LED): ");
@@ -41,6 +57,8 @@ void taskLCD(void *pvParameters)
         lcd.setCursor(0, 1);
         lcd.print("Dev2 (FAN): ");
         lcd.print(dev2 ? "ON " : "OFF");
+
+        vTaskDelay(pdMS_TO_TICKS(2500)); 
 
 	}
 }

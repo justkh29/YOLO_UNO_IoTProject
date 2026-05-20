@@ -13,8 +13,10 @@
 #include <Wire.h>
 #include <DHT20.h>
 #include <LiquidCrystal_I2C.h> 
+#include <Adafruit_NeoPixel.h>
 #include "../src/device/taskDHT20.h"
 #include "../src/device/taskLCD.h"
+
 typedef struct {
     SemaphoreHandle_t mutex; // lock for the shared data
     int neo_status;          // status of neopixel

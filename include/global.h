@@ -18,9 +18,11 @@
 #include <DHT20.h>
 #include <DHTesp.h>
 #include <Adafruit_NeoPixel.h>
+#include <LiquidCrystal_I2C.h>
 #include <PubSubClient.h>
 #include "../src/device/taskDHT20.h"
 #include "../src/device/taskNeoPixel.h"
+#include "../src/device/taskLCD.h"
 typedef struct {
     SemaphoreHandle_t mutex; // To protect the shared data
     int blinkDelay;          // Shared variable: Blink speed in ms

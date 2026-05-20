@@ -16,6 +16,7 @@ void setup() {
 
   xTaskCreate(taskDHT20, "TempHumid", 4096, (void*)sharedData, 1, NULL);
   xTaskCreate(taskBlinkLED, "Blinking LED", 4096, (void*)sharedData, 1, NULL);
+  xTaskCreate(taskLCD, "LCD Display", 4096, (void*)sharedData, 1, NULL);
   xTaskCreate(taskNeoPixel, "Neo Pixel", 4096, (void*)sharedData, 1, NULL);
   Preferences preferences;
 

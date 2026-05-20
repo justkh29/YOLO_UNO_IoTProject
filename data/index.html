@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IoT Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body id="dashboard-page">
+    <div class="container">
+        <h1>Smart Home Dashboard</h1>
+        
+        <div class="card">
+            <h2>Environment</h2>
+            <div class="env-data">
+                <div class="env-item">
+                    <span class="value" id="temp">--</span>
+                    <span class="unit">&deg;C</span>
+                    <div class="label">Temperature</div>
+                </div>
+                <div class="env-item">
+                    <span class="value" id="hum">--</span>
+                    <span class="unit">%</span>
+                    <div class="label">Humidity</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>Controls</h2>
+            <div class="control-group">
+                <h3>Living Room</h3>
+                <button id="btn1" class="btn btn-on" onclick="toggle(1)">Loading...</button>
+            </div>
+            <div class="control-group">
+                <h3>Bedroom Fan</h3>
+                <button id="btn2" class="btn btn-on" onclick="toggle(2)">Loading...</button>
+            </div>
+            
+            <hr class="divider">
+            <button class="btn btn-reset" onclick="resetWifi()">Reconfigure WiFi</button>
+        </div>
+    </div>
+    <script src="index.js"></script>
+</body>
+</html>

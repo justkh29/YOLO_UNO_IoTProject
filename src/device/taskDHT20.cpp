@@ -7,8 +7,8 @@ void taskDHT20(void *pvParameters)
     dht.begin();
     Serial.println("[DHT] Sensor initialized");
     vTaskDelay(pdMS_TO_TICKS(1000));
-    int humidity = 0;
-    int temperature = 0;
+    float humidity = 0;
+    float temperature = 0;
     while(1)
     {
         if (xSemaphoreTake(sysState->mutex, portMAX_DELAY) == pdTRUE)

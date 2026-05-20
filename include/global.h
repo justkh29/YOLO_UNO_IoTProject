@@ -18,22 +18,19 @@
 #include <Preferences.h>
 #include <ArduinoJson.h> 
 #include <DHT20.h>
-#include <DHTesp.h>
+#include <LiquidCrystal_I2C.h> 
 #include <Adafruit_NeoPixel.h>
-#include <LiquidCrystal_I2C.h>
-#include <PubSubClient.h>
 #include "../src/device/taskDHT20.h"
 #include "../src/device/taskLCD.h"
 #include "../src/connectivity/taskWeb.h"
 #include "../src/connectivity/taskCoreIoT.h"
 #include "../src/device/taskNeoPixel.h"
 typedef struct {
-    SemaphoreHandle_t mutex; // To protect the shared data
-    int blinkDelay;          // Shared variable: Blink speed in ms
-    int neo_status; 
-    int temperature;
-    int humidity;
-    bool device1State; 
-    bool device2State;
+    SemaphoreHandle_t mutex; // lock for the shared data
+    int neo_status;          // status of neopixel
+    float temperature;  
+    float humidity;
+    bool device1;
+    bool device2;
 } SystemState;
 #endif

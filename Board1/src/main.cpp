@@ -3,14 +3,17 @@
 void setup() {
   
   Serial.begin(115200);
+  Wire.begin(11, 12);
   SystemState *sharedData = new SystemState;
   sharedData->mutex = xSemaphoreCreateMutex();
   sharedData->humidity = 0.0;
   sharedData->temperature = 0.0;
   sharedData->neo_status = 0;
   xTaskCreate(taskDHT20, "TempHumid", 4096, (void*)sharedData, 1, NULL);
+  xTaskCreate(taskBlinkLED, "LED Blinking", 4096, (void*)sharedData, 1, NULL);
   xTaskCreate(taskLCD, "LCD Display", 4096, (void*)sharedData, 1, NULL);
-
+  xTaskCreate(taskNeoPixel, "NeoPixel", 4096, (void*)sharedData, 1, NULL);
+  xTaskCreate(taskTinyML, "ML", 4096, (void*)sharedData, 1, NULL);
 }
 
 void loop() {

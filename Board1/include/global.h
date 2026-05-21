@@ -5,6 +5,8 @@
 #define MY_SDA 12
 #define LED1_PIN 18  // GPIO for Device 1
 #define LED2_PIN 19  // GPIO for Device 2
+#define WIFI_SSID "ESP32_AP"
+#define WIFI_PASS "HCMUT03"
 // Global library
 #include <Arduino.h>
 #include <freertos/FreeRTOS.h>
@@ -12,6 +14,10 @@
 #include <freertos/semphr.h>
 #include <Wire.h>
 #include <DHT20.h>
+#include <Wifi.h>
+#include <WebServer.h>
+#include <Preferences.h>
+#include <ArduinoJson.h> 
 #include <LiquidCrystal_I2C.h> 
 #include "../src/device/taskDHT20.h"
 #include "../src/device/taskLCD.h"

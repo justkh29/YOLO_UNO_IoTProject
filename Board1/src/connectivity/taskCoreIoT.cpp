@@ -71,6 +71,9 @@ void taskMQTT(void *pvParameters) {
     unsigned long lastMsg = 0;
     const long interval = 5000;
 
+    bool last_d1 = false;
+    bool last_d2 = false;
+
     while (1) {
         if (WiFi.status() == WL_CONNECTED) {
             if (!client.connected()) {
@@ -88,23 +91,26 @@ void taskMQTT(void *pvParameters) {
                     if (cmd.relayId == 2) sysState->device2 = cmd.state;
                     xSemaphoreGive(sysState->mutex);
                 }
-                Serial.printf("[MQTT] Đã nhận lệnh RPC -> Relay %d set to %d\n", cmd.relayId, cmd.state);
             }
 
+            float t = 0, h = 0;
+            bool current_d1 = false, current_d2 = false;
+
+            if (xSemaphoreTake(sysState->mutex, portMAX_DELAY) == pdTRUE) {
+                t = sysState->temperature;
+                h = sysState->humidity;
+                current_d1 = sysState->device1;
+                current_d2 = sysState->device2;
+                xSemaphoreGive(sysState->mutex);
+            }
+
+            bool isStateChanged = (current_d1 != last_d1) || (current_d2 != last_d2);
             unsigned long now = millis();
-            if (now - lastMsg > interval) {
+
+            if (isStateChanged || (now - lastMsg > interval)) {
                 lastMsg = now;
-
-                float t = 0, h = 0;
-                bool d1 = false, d2 = false;
-
-                if (xSemaphoreTake(sysState->mutex, portMAX_DELAY) == pdTRUE) {
-                    t = sysState->temperature;
-                    h = sysState->humidity;
-                    d1 = sysState->device1;
-                    d2 = sysState->device2;
-                    xSemaphoreGive(sysState->mutex);
-                }
+                last_d1 = current_d1;
+                last_d2 = current_d2;
 
                 StaticJsonDocument<512> doc;
                 JsonArray dhtArray = doc.createNestedArray("dht20-sensor-1");
@@ -114,12 +120,25 @@ void taskMQTT(void *pvParameters) {
 
                 JsonArray relayArray = doc.createNestedArray("relay-device-1");
                 JsonObject relayData = relayArray.createNestedObject();
-                relayData["led1"] = d1;
-                relayData["led2"] = d2;
+                relayData["led1"] = current_d1;
+                relayData["led2"] = current_d2;
 
                 char buffer[300];
                 serializeJson(doc, buffer);
                 client.publish("v1/gateway/telemetry", buffer);
+
+                if (isStateChanged) {
+                    StaticJsonDocument<256> attrDoc;
+                    JsonObject relayAttr = attrDoc.createNestedObject("relay-device-1");
+                    relayAttr["led1"] = current_d1;
+                    relayAttr["led2"] = current_d2;
+                    
+                    char attrBuffer[200];
+                    serializeJson(attrDoc, attrBuffer);
+                    client.publish("v1/gateway/attributes", attrBuffer);
+                    
+                    Serial.println("[MQTT] Trạng thái thay đổi từ Local! Đã đồng bộ lên CoreIoT.");
+                }
             }
         } else {
             vTaskDelay(pdMS_TO_TICKS(1000));

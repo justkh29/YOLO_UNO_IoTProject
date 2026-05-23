@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>YOLO UNO - IoT Control Center</title>
+	<link rel="stylesheet" type="text/css" href="/style.css">
+	<script src="/index.js" defer></script>
+</head>
+<body>
+	<div class="container">
+		<!-- Header -->
+		<header class="header">
+			<div class="logo-container">
+				<div class="logo-dot"></div>
+				<h1>YOLO UNO</h1>
+			</div>
+			<p class="subtitle">IoT Control Center</p>
+		</header>
+
+		<!-- Khối Giám sát Môi trường (Grid) -->
+		<section class="section">
+			<h2 class="section-title">Thông số Môi trường</h2>
+			<div class="env-grid">
+				<!-- Card Nhiệt độ -->
+				<div class="env-card card-temp">
+					<div class="env-icon">
+						<!-- Icon nhiệt kế SVG -->
+						<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4v10.54a4 4 0 1 1-4 0V4a2 2 0 0 1 4 0Z"/></svg>
+					</div>
+					<div class="env-info">
+						<span class="env-label">Nhiệt độ</span>
+						<div class="env-value-wrapper">
+							<span id="temp" class="env-value">--</span>
+							<span class="env-unit">°C</span>
+						</div>
+					</div>
+				</div>
+
+				<!-- Card Độ ẩm -->
+				<div class="env-card card-hum">
+					<div class="env-icon">
+						<!-- Icon giọt nước SVG -->
+						<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22a7 7 0 0 0 7-7c0-4.3-7-11-7-11S5 10.7 5 15a7 7 0 0 0 7 7z"/></svg>
+					</div>
+					<div class="env-info">
+						<span class="env-label">Độ ẩm</span>
+						<div class="env-value-wrapper">
+							<span id="hum" class="env-value">--</span>
+							<span class="env-unit">%</span>
+						</div>
+					</div>
+				</div>
+			</div>
+		</section>
+
+		<!-- Khối Điều khiển Thiết bị -->
+		<section class="section">
+			<h2 class="section-title">Điều khiển Thiết bị</h2>
+			<div class="control-grid">
+				<!-- Thiết bị 1: Đèn phòng khách -->
+				<div id="card-dev1" class="device-card">
+					<div class="device-header">
+						<div class="device-icon bulb-icon">
+							<!-- Icon bóng đèn SVG -->
+							<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A5 5 0 0 0 8 8c0 1 .3 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"/><path d="M9 18h6"/><path d="M10 22h4"/></svg>
+						</div>
+						<span id="status1" class="status-indicator">OFF</span>
+					</div>
+					<div class="device-body">
+						<span class="device-name">Đèn phòng khách</span>
+						<span class="device-desc">Living Room LED</span>
+					</div>
+					<button id="btn1" class="toggle-btn" onclick="toggle(1)">
+						<span class="btn-text">Bật Thiết Bị</span>
+					</button>
+				</div>
+
+				<!-- Thiết bị 2: Quạt phòng ngủ -->
+				<div id="card-dev2" class="device-card">
+					<div class="device-header">
+						<div class="device-icon fan-icon">
+							<!-- Icon quạt/cánh quạt SVG -->
+							<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 12a5 5 0 1 0 0-10 5 5 0 0 0 0 10Z"/><path d="M12 12a5 5 0 1 0 10 0 5 5 0 0 0-10 0Z"/><path d="M12 12a5 5 0 1 0 0 10 5 5 0 0 0 0-10Z"/><path d="M12 12a5 5 0 1 0-10 0 5 5 0 0 0 10 0Z"/><circle cx="12" cy="12" r="1"/></svg>
+						</div>
+						<span id="status2" class="status-indicator">OFF</span>
+					</div>
+					<div class="device-body">
+						<span class="device-name">Quạt phòng ngủ</span>
+						<span class="device-desc">Bedroom Fan</span>
+					</div>
+					<button id="btn2" class="toggle-btn" onclick="toggle(2)">
+						<span class="btn-text">Bật Thiết Bị</span>
+					</button>
+				</div>
+			</div>
+		</section>
+
+		<!-- Footer Settings -->
+		<footer class="footer">
+			<button class="settings-btn" onclick="resetWifi()">
+				<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.1a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>
+				<span>Cấu hình lại WiFi (Reset)</span>
+			</button>
+		</footer>
+	</div>
+</body>
+</html>

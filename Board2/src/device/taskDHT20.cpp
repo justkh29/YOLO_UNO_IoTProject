@@ -1,30 +1,31 @@
 #include "taskDHT20.h"
-DHT20 dht;
+DHTesp dht;
 void taskDHT20(void *pvParameters)
 {
-    Wire.begin(11, 12);
     SystemState *sysState = (SystemState *)pvParameters;
-    dht.begin();
+    dht.setup(DHTPin, DHTesp::DHT11);
     Serial.println("[DHT] Sensor initialized");
-    vTaskDelay(pdMS_TO_TICKS(1000));
-    int humidity = 0;
-    int temperature = 0;
     while(1)
     {
         if (xSemaphoreTake(sysState->mutex, portMAX_DELAY) == pdTRUE)
         {
-            dht.read();
-            sysState->humidity = dht.getHumidity();
-            sysState->temperature = dht.getTemperature();
-            Serial.print("[DHT] Temp: ");
-            Serial.print(sysState->temperature);
-            Serial.print(" C  | Humidity: ");
-            Serial.print(sysState->humidity);
-            Serial.println(" %");            
+            TempAndHumidity data = dht.getTempAndHumidity();
+            if (data.humidity <= 100 && data.humidity >= 0 && data.temperature >= -40 && data.temperature <= 80)
+            {
+                sysState->humidity = data.humidity;
+                sysState->temperature = data.temperature;
+                Serial.print("[DHT] Temp: ");
+                Serial.print(sysState->temperature);
+                Serial.print(" C  | Humidity: ");
+                Serial.print(sysState->humidity);
+                Serial.println(" %");
+            }
             xSemaphoreGive(sysState->mutex);
         }
         vTaskDelay(pdMS_TO_TICKS(5000));
     }
+    
+    
 }
 
 void taskBlinkLED(void *pvParameters) 

@@ -120,8 +120,8 @@ void taskMQTT(void *pvParameters) {
 
                 JsonArray relayArray = doc.createNestedArray("relay-device-1");
                 JsonObject relayData = relayArray.createNestedObject();
-                relayData["led1"] = current_d1;
-                relayData["led2"] = current_d2;
+                relayData["relay1"] = current_d1;
+                relayData["relay2"] = current_d2;
 
                 char buffer[300];
                 serializeJson(doc, buffer);
@@ -130,8 +130,8 @@ void taskMQTT(void *pvParameters) {
                 if (isStateChanged) {
                     StaticJsonDocument<256> attrDoc;
                     JsonObject relayAttr = attrDoc.createNestedObject("relay-device-1");
-                    relayAttr["led1"] = current_d1;
-                    relayAttr["led2"] = current_d2;
+                    relayAttr["relay1"] = current_d1;
+                    relayAttr["relay2"] = current_d2;
                     
                     char attrBuffer[200];
                     serializeJson(attrDoc, attrBuffer);

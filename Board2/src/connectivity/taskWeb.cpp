@@ -200,9 +200,6 @@ String getDashboardHTML() {
 			fetch('/status')
 			.then(r => r.json())
 			.then(d => {
-				document.getElementById('temp').innerText = d.t.toFixed(1);
-				document.getElementById('hum').innerText = d.h.toFixed(1);
-
 				updateDevice('btn1','status1', d.d1);
 				updateDevice('btn2','status2', d.d2);
 			});
@@ -244,18 +241,6 @@ String getDashboardHTML() {
 
 <body>
 	<div class="container">
-
-		<div class="card fade">
-			<h2> Environment</h2>
-			<div>
-				<span id="temp" class="value">--</span>
-				<span class="unit">°C</span>
-			</div>
-			<div>
-				<span id="hum" class="value">--</span>
-				<span class="unit">%</span>
-			</div>
-		</div>
 
 		<div class="card fade">
 			<h2> Controls</h2>
@@ -319,14 +304,13 @@ void handleRequest(WiFiClient &client, String req)
 	}
 	// API: Status JSON
 	else if (req.indexOf("GET /status") >= 0) {
-		float t=0, h=0; bool d1=false, d2=false;
+		bool d1=false, d2=false;
 		if (xSemaphoreTake(webSysState->mutex, portMAX_DELAY) == pdTRUE) {
-			t = webSysState->temperature; h = webSysState->humidity;
 			d1 = webSysState->device1State; d2 = webSysState->device2State;
 			xSemaphoreGive(webSysState->mutex);
 		}
 		StaticJsonDocument<300> doc;
-		doc["t"] = t; doc["h"] = h; doc["d1"] = d1; doc["d2"] = d2;
+		doc["d1"] = d1; doc["d2"] = d2;
 
 		client.println("HTTP/1.1 200 OK\r\nContent-Type: application/json\r\nConnection: close\r\n");
 		serializeJson(doc, client);

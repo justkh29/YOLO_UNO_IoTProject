@@ -2,8 +2,8 @@
 void taskRelay(void *pvParameters)
 {
     SystemState *sysState = (SystemState *)pvParameters;
-    pinMode(DEVICE1_PIN, OUTPUT);
-    pinMode(DEVICE2_PIN, OUTPUT);
+    pinMode(RELAY_1, OUTPUT);
+    pinMode(RELAY_2, OUTPUT);
     bool dev1_state = false;
     bool dev2_state = false;
     while(1)
@@ -14,7 +14,8 @@ void taskRelay(void *pvParameters)
             dev2_state = sysState->device2State;
             xSemaphoreGive(sysState->mutex);
         }
-        digitalWrite(DEVICE1_PIN, dev1_state);
-        digitalWrite(DEVICE2_PIN, dev2_state);
+        digitalWrite(RELAY_1, dev1_state);
+        digitalWrite(RELAY_2, dev2_state);
+        vTaskDelay(pdMS_TO_TICKS(100));
     }
 }

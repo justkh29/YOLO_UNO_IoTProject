@@ -1,27 +1,21 @@
-#include <global.h>
+#include "global.h"
 
-void setup()
-{
+void setup() {
   Serial.begin(115200);
-  Wire.begin(21,22);
+
+  // Khởi tạo biến toàn cục
   SystemState *sharedData = new SystemState;
   sharedData->mutex = xSemaphoreCreateMutex();
-  sharedData->humidity = 0;
-  sharedData->temperature = 0;
   sharedData->device1State = false;
   sharedData->device2State = false;
 
-  xTaskCreate(taskDHT20, "TempHumid", 4096, (void *)sharedData, 1, NULL);
-  //xTaskCreate(taskBlinkLED, "Blinking LED", 4096, (void *)sharedData, 1, NULL);
-  xTaskCreate(taskLCD, "LCD Display", 4096, (void *)sharedData, 1, NULL);
-  //xTaskCreate(taskNeoPixel, "Neo Pixel", 4096, (void *)sharedData, 1, NULL);
-  xTaskCreate(taskRelay, "Relay Control", 4096, (void *)sharedData, 1, NULL);
   Preferences preferences;
   preferences.begin("wifi-config", true);
   String ssid = preferences.getString("ssid", "");
   String pass = preferences.getString("pass", "");
   preferences.end();
-
+  xTaskCreate(taskRelay, "Relay control", 2048, (void *)sharedData, 1, NULL);
+  xTaskCreate(taskEspNowRecv, "ESP-NOW Recv", 4096, (void *)sharedData, 1, NULL);
   if (ssid == "")
   {
     Serial.println("No saved WiFi. Starting AP Mode.");
@@ -56,11 +50,10 @@ void setup()
     }
 
     xTaskCreate(taskWeb, "Web Server", 8192, (void *)sharedData, 1, NULL);
-    xTaskCreate(taskMQTT, "MQTT Task", 8192, (void *)sharedData, 1, NULL);
   }
 }
 
-void loop()
-{
-  // Empty
+void loop() {
+  // Xóa task loop mặc định để giải phóng bộ nhớ cho FreeRTOS
+  vTaskDelete(NULL);
 }

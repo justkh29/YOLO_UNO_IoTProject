@@ -6,7 +6,7 @@
 #define RELAY_1 18  // GPIO for Device 1
 #define RELAY_2 19  // GPIO for Device 2
 #define WIFI_SSID "ESP32_AP2"
-#define WIFI_PASS "HCMUT2"
+#define WIFI_PASS "HCMUT021"
 // Global library
 #include <Arduino.h>
 #include <freertos/FreeRTOS.h>

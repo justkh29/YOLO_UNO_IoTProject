@@ -11,12 +11,12 @@ void setup() {
   sharedData->neo_status = 0;
   sharedData->device1 = false;
   sharedData->device2 = false;
-  xTaskCreate(taskDHT20, "TempHumid", 4096, (void*)sharedData, 1, NULL);
+  xTaskCreate(taskDHT20, "TempHumid", 4096, (void*)sharedData, 2, NULL);
   xTaskCreate(taskBlinkLED, "LED Blinking", 4096, (void*)sharedData, 2, NULL);
   xTaskCreate(taskLCD, "LCD Display", 4096, (void*)sharedData, 2, NULL);
   xTaskCreate(taskNeoPixel, "NeoPixel", 4096, (void*)sharedData, 2, NULL);
   xTaskCreatePinnedToCore(taskTinyML,"TinyML",10000, (void*)sharedData, 1, NULL, 1);
-  xTaskCreate(taskEspNowSync, "ESPNOW Sync", 4096, (void*)sharedData, 1, NULL);
+  xTaskCreate(taskEspNowSync, "ESPNOW Sync", 4096, (void*)sharedData, 4, NULL);
   Preferences preferences;
   preferences.begin("wifi-config", true);
   String ssid = preferences.getString("ssid", "");
@@ -26,7 +26,7 @@ void setup() {
   if (ssid == "")
   {
     Serial.println("No saved WiFi. Starting AP Mode.");
-    xTaskCreate(taskWeb, "Web Server", 8192, (void *)sharedData, 1, NULL);
+    xTaskCreate(taskWeb, "Web Server", 8192, (void *)sharedData, 5, NULL);
   }
   else
   {
@@ -56,8 +56,8 @@ void setup() {
       WiFi.setAutoReconnect(false);
     }
 
-    xTaskCreate(taskWeb, "Web Server", 8192, (void *)sharedData, 1, NULL);
-    xTaskCreate(taskMQTT, "MQTT Task", 8192, (void *)sharedData, 1, NULL);
+    xTaskCreate(taskWeb, "Web Server", 8192, (void *)sharedData, 5, NULL);
+    xTaskCreate(taskMQTT, "MQTT Task", 8192, (void *)sharedData, 4, NULL);
   }
 }
 

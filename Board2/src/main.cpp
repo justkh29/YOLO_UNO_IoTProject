@@ -15,11 +15,11 @@ void setup() {
   String pass = preferences.getString("pass", "");
   preferences.end();
   xTaskCreate(taskRelay, "Relay control", 2048, (void *)sharedData, 1, NULL);
-  xTaskCreate(taskEspNowRecv, "ESP-NOW Recv", 4096, (void *)sharedData, 1, NULL);
+  xTaskCreate(taskEspNowRecv, "ESP-NOW Recv", 4096, (void *)sharedData, 2, NULL);
   if (ssid == "")
   {
     Serial.println("No saved WiFi. Starting AP Mode.");
-    xTaskCreate(taskWeb, "Web Server", 8192, (void *)sharedData, 1, NULL);
+    xTaskCreate(taskWeb, "Web Server", 8192, (void *)sharedData, 3, NULL);
   }
   else
   {
@@ -49,7 +49,7 @@ void setup() {
       WiFi.setAutoReconnect(false);
     }
 
-    xTaskCreate(taskWeb, "Web Server", 8192, (void *)sharedData, 1, NULL);
+    xTaskCreate(taskWeb, "Web Server", 8192, (void *)sharedData, 3, NULL);
   }
 }
 

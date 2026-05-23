@@ -40,7 +40,6 @@ void taskTinyML(void *pvParameters) {
       Serial.println(" CẢNH BÁO: Không tìm thấy PSRAM hoặc cấu hình sai!");
       Serial.println("-> Tự động chuyển sang dùng RAM nội bộ (Internal SRAM)...");
       
-      // Fallback: Cấp phát vào RAM nội bộ của chip
       tensorArena = (uint8_t *)heap_caps_malloc(tensorArenaSize, MALLOC_CAP_INTERNAL);
       
       if (tensorArena == NULL) {
@@ -53,14 +52,12 @@ void taskTinyML(void *pvParameters) {
       Serial.printf(" Đã cấp phát %d KB thành công trên PSRAM!\n", tensorArenaSize / 1024);
   }
 
-  // 1. Tải mô hình
   tflModel = tflite::GetModel(model_tflite);
   if (tflModel->version() != TFLITE_SCHEMA_VERSION) {
     Serial.println("Model schema mismatch!");
     vTaskDelete(NULL);
   }
 
-  // 2. Khởi tạo Interpreter
   interpreter = new tflite::MicroInterpreter(
       tflModel,
       resolver,
@@ -69,14 +66,10 @@ void taskTinyML(void *pvParameters) {
       &micro_error_reporter
   );
 
-  // 3. Chuẩn bị bộ nhớ cho Tensors
   if (interpreter->AllocateTensors() != kTfLiteOk) {
     Serial.println("AllocateTensors failed!");
     vTaskDelete(NULL);
   }
-
-  // In ra xem AI thực sự ăn bao nhiêu RAM
-  Serial.printf(">> Dung lượng AI thực sự sử dụng: %.2f KB <<\n", interpreter->arena_used_bytes() / 1024.0);
 
   input = interpreter->input(0);
   output = interpreter->output(0);
@@ -87,14 +80,12 @@ void taskTinyML(void *pvParameters) {
     float current_temp = 0.0;
     float current_humi = 0.0;
 
-    // Safely retrieve data from the global state using FreeRTOS mutex
     if (sysState != nullptr && xSemaphoreTake(sysState->mutex, portMAX_DELAY) == pdTRUE) {
         current_temp = sysState->temperature;
         current_humi = sysState->humidity;
         xSemaphoreGive(sysState->mutex);
     }
 
-    // Process only if sensor values are properly populated
     if (current_temp != 0.0f && current_humi != 0.0f) {
         float current_hour  = 12.0; 
         float current_day   = 6.0;  
@@ -145,7 +136,6 @@ void taskTinyML(void *pvParameters) {
         }
     }
     
-    // Sample periodically (e.g. 5 seconds to build temporal sequence)
     vTaskDelay(pdMS_TO_TICKS(5000));
   }
 }

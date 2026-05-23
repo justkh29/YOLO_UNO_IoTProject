@@ -6,7 +6,7 @@
 #define LED1_PIN 18  // GPIO for Device 1
 #define LED2_PIN 19  // GPIO for Device 2
 #define WIFI_SSID "ESP32_AP1"
-#define WIFI_PASS "caimonchoma"
+#define WIFI_PASS "12345678"
 // Global library
 #include <Arduino.h>
 #include <freertos/FreeRTOS.h>
